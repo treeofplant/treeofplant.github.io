@@ -3,22 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display</title>
-    <script>
-        window.onload = function() {
-            // Get the ID parameter from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-
-            // Check if the ID parameter exists
-            if (id) {
-                // Display the ID on the page
-                document.getElementById('idDisplay').innerText = `ID: ${id}`;
-            }
-        };
-    </script>
+    <title>API Made By Lightux Team</title>
 </head>
 <body>
-    <div id="idDisplay"></div>
+    <div id="result"></div>
+
+    <script>
+        function getInnerSubstring(string, boundstring, trimit=false) {
+            let res = false;
+            let bstart = string.indexOf(boundstring);
+            if (bstart >= 0) {
+                let bend = string.lastIndexOf(boundstring);
+                if (bend >= 0 && bend > bstart)
+                    res = string.substring(bstart + boundstring.length, bend);
+            }
+            return trimit ? res.trim() : res;
+        }  
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const id = urlParams.get('gameid');
+
+        if (id) {
+            fetch(`https://www.roblox.com/games/${id}`)
+                .then(response => response.text())
+                .then(data => {
+                    let value = data;
+                    value = value.substring(value.indexOf("text-lead font-caption-body wait-for-i18n-format-render"));
+                    value = value.substring(0, value.indexOf("/"));
+
+                    let yess = value.substring(value.indexOf(" ") + 53);
+                    let yesdone = String(yess);
+
+                    let int_var = parseInt(yesdone.replace(/\D/g, ''), 10);
+                    let formattedNumber = new Intl.NumberFormat().format(int_var);
+
+                    document.getElementById('result').innerText = formattedNumber;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+    <!--
+    This script places a badge on your repl's full-browser view back to your repl's cover
+    page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+    teal, blue, blurple, magenta, pink!
+    -->
+    <script src="https://replit.com/public/js/replit-badge-v2.js" theme="dark" position="bottom-right"></script>
 </body>
 </html>
